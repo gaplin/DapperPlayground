@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DapperTests", "DapperTests\DapperTests.csproj", "{E9E2D05B-7664-46F5-8CA4-F4C812E2E21E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DapperTests.Tests", "DapperTests.Tests\DapperTests.Tests.csproj", "{42D00633-8881-46E8-815A-2643BCEAF66E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DapperTests.API", "DapperTests.API\DapperTests.API.csproj", "{8741C48F-2706-4B43-A572-082402012A92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E9E2D05B-7664-46F5-8CA4-F4C812E2E21E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E9E2D05B-7664-46F5-8CA4-F4C812E2E21E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E9E2D05B-7664-46F5-8CA4-F4C812E2E21E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E9E2D05B-7664-46F5-8CA4-F4C812E2E21E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42D00633-8881-46E8-815A-2643BCEAF66E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42D00633-8881-46E8-815A-2643BCEAF66E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42D00633-8881-46E8-815A-2643BCEAF66E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42D00633-8881-46E8-815A-2643BCEAF66E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8741C48F-2706-4B43-A572-082402012A92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8741C48F-2706-4B43-A572-082402012A92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8741C48F-2706-4B43-A572-082402012A92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8741C48F-2706-4B43-A572-082402012A92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
