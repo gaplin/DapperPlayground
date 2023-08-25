@@ -5,9 +5,9 @@ namespace DapperTests.API.Movies;
 
 public sealed class MovieService : IMovieService
 {
-    private readonly ISqlConnectionFactory _connectionFactory;
+    private readonly IDbConnectionFactory _connectionFactory;
 
-    public MovieService(ISqlConnectionFactory connectionFactory)
+    public MovieService(IDbConnectionFactory connectionFactory)
     {
         _connectionFactory = connectionFactory;
     }
