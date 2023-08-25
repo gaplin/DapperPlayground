@@ -1,13 +1,26 @@
+using DapperTests.API.ConnectionFactories;
+using DapperTests.API.Movies;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>(
+    serviceProvider =>
+    {
+        var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+        var connectionString = configuration.GetConnectionString("Database")
+                               ?? throw new ApplicationException("Database connection string is missing");
+
+        return new SqlConnectionFactory(connectionString);
+    }
+    );
+
+builder.Services.AddScoped<IMovieService, MovieService>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -16,29 +29,38 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+var movies = app.MapGroup("movies");
 
-app.MapGet("/weatherforecast", () =>
+movies.MapGet("/", async (IMovieService service) =>
 {
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+    var movies = await service.GetAsync();
+    return Results.Ok(movies);
+});
+
+movies.MapGet("/{id}", async (int id, IMovieService service) =>
+{
+    var movie = await service.GetByIdAsync(id);
+    return movie is null ?
+        Results.NotFound() :
+        Results.Ok(movie);
+});
+
+movies.MapPost("/", async (Movie movie, IMovieService service) =>
+{
+    await service.CreateAsync(movie);
+    return Results.Ok();
+});
+
+movies.MapPut("/", async (Movie movie, IMovieService service) =>
+{
+    await service.UpdateAsync(movie);
+    return Results.Ok();
+});
+
+movies.MapDelete("/{id}", async (int id, IMovieService service) =>
+{
+    await service.DeleteAsync(id);
+    return Results.Ok();
+});
 
 app.Run();
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
