@@ -28,6 +28,26 @@ public sealed class MovieServiceTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task CreateManyAndGetAll()
+    {
+        // Arrange
+        var firstMovie = new Movie(100, "firstMovie");
+        var secondMovie = new Movie(1000, "secondMovie");
+
+        // Act
+        await _movieService.CreateAsync(firstMovie);
+        await _movieService.CreateAsync(secondMovie);
+        var insertedMovies = await _movieService.GetAsync();
+
+        // Assert
+        insertedMovies.Should().Contain(new Movie[]
+        {
+            firstMovie with { Id = 1 },
+            secondMovie with { Id = 2 },
+        });
+    }
+
+    [Fact]
     public async Task CreateAndDelete()
     {
         // Arrange
@@ -40,6 +60,35 @@ public sealed class MovieServiceTests : IAsyncLifetime
 
         // Assert
         insertedMovie.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task CreateUpdateAndGet()
+    {
+        // Arrange
+        var movie = new Movie(5, "Movie");
+        var movieUpdate = new Movie(1, "UpdatedName");
+
+        // Act
+        await _movieService.CreateAsync(movie);
+        await _movieService.UpdateAsync(movieUpdate);
+        var updatedMovie = await _movieService.GetByIdAsync(1);
+
+        // Assert
+        updatedMovie.Should().Be(movieUpdate);
+    }
+
+    [Fact]
+    public async Task GetById_ReturnsNull_WhenMovieDoesNotExist()
+    {
+        // Arrange
+        var id = 1;
+
+        // Act
+        var result = await _movieService.GetByIdAsync(id);
+
+        // Assert
+        result.Should().BeNull();
     }
 
     public async Task DisposeAsync()
