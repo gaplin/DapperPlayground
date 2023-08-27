@@ -49,7 +49,7 @@ public sealed class MovieService : IMovieService
             """;
 
         var movies = await connection.QueryAsync<Movie>(sql);
-        return movies.ToList();
+        return movies.AsList();
     }
 
     public async Task<Movie?> GetByIdAsync(int id)
