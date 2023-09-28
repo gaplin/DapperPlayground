@@ -51,6 +51,12 @@ movies.MapPost("/", async (Movie movie, IMovieService service) =>
     return Results.Ok();
 });
 
+movies.MapPost("/createMany", async (int count, IMovieService service) =>
+{
+    await service.CreateManyAsync(count);
+    return Results.Ok();
+});
+
 movies.MapPut("/", async (Movie movie, IMovieService service) =>
 {
     await service.UpdateAsync(movie);
