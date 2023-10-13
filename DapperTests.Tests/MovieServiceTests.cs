@@ -1,13 +1,18 @@
 ﻿using Dapper;
 using DapperTests.API.ConnectionFactories;
 using DapperTests.API.Movies;
+using Microsoft.SqlServer.Dac;
+using System.Reflection;
 using Testcontainers.MsSql;
 
 namespace DapperTests.Tests;
 
 public sealed class MovieServiceTests : IAsyncLifetime
 {
-    private readonly MsSqlContainer _dbContainer = new MsSqlBuilder().Build();
+    private readonly MsSqlContainer _dbContainer = 
+        new MsSqlBuilder()
+        .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
+        .Build();
     private SqlConnectionFactory _connectionFactory = default!;
     private MovieService _movieService = default!;
 
@@ -99,19 +104,14 @@ public sealed class MovieServiceTests : IAsyncLifetime
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
-        _connectionFactory = new(_dbContainer.GetConnectionString());
+        var connectionString = _dbContainer.GetConnectionString();
+        _connectionFactory = new(connectionString);
 
-        await using var connection = _connectionFactory.Create();
-
-        await connection.ExecuteAsync(
-            """
-            CREATE TABLE [dbo].[Movies] (
-            [Id]   INT          IDENTITY (1, 1) NOT NULL,
-            [Name] VARCHAR (50) NOT NULL,
-            CONSTRAINT [PK_Movies] PRIMARY KEY CLUSTERED ([Id] ASC)
-            )
-            """
-            );
+        var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+        var dacpacPath = Path.Combine(assemblyPath, "Test_db.dacpac");
+        using var dacpac = DacPackage.Load(dacpacPath);
+        var dacService = new DacServices(connectionString);
+        dacService.Deploy(dacpac, MsSqlBuilder.DefaultDatabase, true);
 
         _movieService = new MovieService(_connectionFactory);
     }
