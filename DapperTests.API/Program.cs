@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>(
+builder.Services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>(
     serviceProvider =>
     {
         var configuration = serviceProvider.GetRequiredService<IConfiguration>();

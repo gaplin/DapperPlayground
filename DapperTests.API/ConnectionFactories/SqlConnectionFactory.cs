@@ -1,9 +1,8 @@
 ﻿using Microsoft.Data.SqlClient;
-using System.Data.Common;
 
 namespace DapperTests.API.ConnectionFactories;
 
-public sealed class SqlConnectionFactory : IDbConnectionFactory
+public sealed class SqlConnectionFactory : ISqlConnectionFactory
 {
     private readonly string _connectionString;
 
@@ -12,7 +11,7 @@ public sealed class SqlConnectionFactory : IDbConnectionFactory
         _connectionString = connectionString;
     }
 
-    public DbConnection Create()
+    public SqlConnection Create()
     {
         return new SqlConnection(_connectionString);
     }
