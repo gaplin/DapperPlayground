@@ -1,5 +1,7 @@
 ﻿using Dapper;
 using DapperTests.API.ConnectionFactories;
+using Microsoft.Data.SqlClient;
+using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Text;
@@ -34,12 +36,13 @@ public sealed class MovieService : IMovieService
         var watch = new Stopwatch();
         await using var connection = _connectionFactory.Create();
         await connection.OpenAsync();
-        var transaction = await connection.BeginTransactionAsync();
+        using var transaction = connection.BeginTransaction();
 
         try
         {
             watch.Start();
-            await FastInsertAsync(count, 50, connection, movies, transaction);
+            //await FastInsertAsync(count, 10, connection, movies, transaction);
+            await BulkInsertAsync(connection, movies, transaction);
             //await NormalInsertAsync(connection, movies, transaction);
 
             await transaction.CommitAsync();
@@ -53,7 +56,7 @@ public sealed class MovieService : IMovieService
         Console.WriteLine(watch.ElapsedMilliseconds);
     }
 
-    private static async Task NormalInsertAsync(DbConnection connection, IReadOnlyList<Movie> movies, DbTransaction transaction)
+    private static async Task NormalInsertAsync(SqlConnection connection, IReadOnlyList<Movie> movies, SqlTransaction transaction)
     {
         const string sql =
             """
@@ -65,7 +68,24 @@ public sealed class MovieService : IMovieService
         await connection.ExecuteAsync(sql, movies, transaction: transaction);
     }
 
-    private static async Task FastInsertAsync(int count, int batchSize, DbConnection connection, IReadOnlyList<Movie> movies, DbTransaction transaction)
+    private static async Task BulkInsertAsync(SqlConnection connection, IReadOnlyList<Movie> movies, SqlTransaction transaction)
+    {
+        using var bulkCopy = new SqlBulkCopy(connection, SqlBulkCopyOptions.Default, transaction);
+        bulkCopy.DestinationTableName = "[Movies]";
+        bulkCopy.ColumnMappings.Add("Name", "Name");
+
+        using var table = new DataTable();
+        table.Columns.Add("Name", typeof(string));
+        foreach(var movie in movies) 
+        {
+            table.Rows.Add(movie.Name);
+        }
+
+        await bulkCopy.WriteToServerAsync(table);
+
+    } 
+
+    private static async Task FastInsertAsync(int count, int batchSize, SqlConnection connection, IReadOnlyList<Movie> movies, SqlTransaction transaction)
     {
         const string baseSql =
                 """
