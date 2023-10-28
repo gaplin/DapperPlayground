@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DapperTests.API\DapperTests.API.csproj" />
+    <ProjectReference Include="..\DapperTests.API\DapperPlayground.API.csproj" />
   </ItemGroup>
 	<ItemGroup>
 		<None Include="..\DapperTests.Database\Snapshots\Test_db.dacpac">

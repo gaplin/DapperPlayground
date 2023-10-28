@@ -1,5 +1,5 @@
-using DapperTests.API.ConnectionFactories;
-using DapperTests.API.Movies;
+using DapperPlayground.API.ConnectionFactories;
+using DapperPlayground.API.Movies;
 
 var builder = WebApplication.CreateBuilder(args);
 

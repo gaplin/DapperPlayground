@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 
-namespace DapperTests.API.ConnectionFactories;
+namespace DapperPlayground.API.ConnectionFactories;
 
 public interface ISqlConnectionFactory
 {

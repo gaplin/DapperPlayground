@@ -1,12 +1,11 @@
 ﻿using Dapper;
-using DapperTests.API.ConnectionFactories;
+using DapperPlayground.API.ConnectionFactories;
 using Microsoft.Data.SqlClient;
 using System.Data;
-using System.Data.Common;
 using System.Diagnostics;
 using System.Text;
 
-namespace DapperTests.API.Movies;
+namespace DapperPlayground.API.Movies;
 
 public sealed class MovieService : IMovieService
 {
@@ -76,14 +75,13 @@ public sealed class MovieService : IMovieService
 
         using var table = new DataTable();
         table.Columns.Add("Name", typeof(string));
-        foreach(var movie in movies) 
+        foreach (var movie in movies)
         {
             table.Rows.Add(movie.Name);
         }
 
         await bulkCopy.WriteToServerAsync(table);
-
-    } 
+    }
 
     private static async Task FastInsertAsync(int count, int batchSize, SqlConnection connection, IReadOnlyList<Movie> movies, SqlTransaction transaction)
     {

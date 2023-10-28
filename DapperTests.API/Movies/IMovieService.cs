@@ -1,4 +1,4 @@
-﻿namespace DapperTests.API.Movies;
+﻿namespace DapperPlayground.API.Movies;
 
 public interface IMovieService
 {

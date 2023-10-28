@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DapperTests.Tests", "DapperTests.Tests\DapperTests.Tests.csproj", "{42D00633-8881-46E8-815A-2643BCEAF66E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DapperPlayground.Tests", "DapperTests.Tests\DapperPlayground.Tests.csproj", "{42D00633-8881-46E8-815A-2643BCEAF66E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DapperTests.API", "DapperTests.API\DapperTests.API.csproj", "{8741C48F-2706-4B43-A572-082402012A92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DapperPlayground.API", "DapperTests.API\DapperPlayground.API.csproj", "{8741C48F-2706-4B43-A572-082402012A92}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "DapperTests.Database", "DapperTests.Database\DapperTests.Database.sqlproj", "{583F323D-0CBA-415D-A111-19EBD5F973B3}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "DapperPlayground.Database", "DapperTests.Database\DapperPlayground.Database.sqlproj", "{583F323D-0CBA-415D-A111-19EBD5F973B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

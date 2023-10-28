@@ -1,21 +1,20 @@
-﻿using Dapper;
-using DapperTests.API.ConnectionFactories;
-using DapperTests.API.Movies;
+﻿using DapperPlayground.API.ConnectionFactories;
+using DapperPlayground.API.Movies;
 using Microsoft.SqlServer.Dac;
 using System.Reflection;
 using Testcontainers.MsSql;
 
-namespace DapperTests.Tests;
+namespace DapperPlayground.Tests;
 
 public sealed class MovieServiceTests : IAsyncLifetime
 {
-    private readonly MsSqlContainer _dbContainer = 
+    private readonly MsSqlContainer _dbContainer =
         new MsSqlBuilder()
         .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
         .Build();
+
     private SqlConnectionFactory _connectionFactory = default!;
     private MovieService _movieService = default!;
-
 
     [Fact]
     public async Task CreateAndGet()
