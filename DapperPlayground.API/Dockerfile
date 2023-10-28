@@ -7,16 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["DapperTests/DapperTests.csproj", "DapperTests/"]
-RUN dotnet restore "DapperTests/DapperTests.csproj"
+COPY ["DapperPlayground/DapperPlayground.csproj", "DapperPlayground/"]
+RUN dotnet restore "DapperPlayground/DapperPlayground.csproj"
 COPY . .
-WORKDIR "/src/DapperTests"
-RUN dotnet build "DapperTests.csproj" -c Release -o /app/build
+WORKDIR "/src/DapperPlayground"
+RUN dotnet build "DapperPlayground.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "DapperTests.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "DapperPlayground.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "DapperTests.dll"]
+ENTRYPOINT ["dotnet", "DapperPlayground.dll"]
