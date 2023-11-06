@@ -1,5 +1,6 @@
 using DapperPlayground.API.ConnectionFactories;
 using DapperPlayground.API.Movies;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +8,11 @@ builder.Configuration
     .AddJsonFile("appsettings.Local.json", true, false);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(opts =>
+{
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
 
 builder.Services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>(
     serviceProvider =>
@@ -54,9 +59,9 @@ movies.MapPost("/", async (Movie movie, IMovieService service) =>
     return Results.Ok();
 });
 
-movies.MapPost("/createMany", async (int count, IMovieService service) =>
+movies.MapPost("/createMany", async (CreateManyRequest request, IMovieService service) =>
 {
-    await service.CreateManyAsync(count);
+    await service.CreateManyAsync(request.Quantity, request.CreateManyType);
     return Results.Ok();
 });
 
@@ -69,6 +74,12 @@ movies.MapPut("/", async (Movie movie, IMovieService service) =>
 movies.MapDelete("/{id}", async (int id, IMovieService service) =>
 {
     await service.DeleteAsync(id);
+    return Results.Ok();
+});
+
+movies.MapDelete("/", async (IMovieService service) =>
+{
+    await service.DeleteAllAsync();
     return Results.Ok();
 });
 

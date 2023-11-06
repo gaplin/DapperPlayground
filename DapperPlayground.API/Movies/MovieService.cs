@@ -1,9 +1,9 @@
 ﻿using Dapper;
 using DapperPlayground.API.ConnectionFactories;
+using DapperPlayground.API.Enums;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Diagnostics;
-using System.Net.WebSockets;
 using System.Text;
 
 namespace DapperPlayground.API.Movies;
@@ -33,30 +33,42 @@ public sealed class MovieService : IMovieService
         return result;
     }
 
-    public async Task CreateManyAsync(int count)
+    public async Task CreateManyAsync(int count, CreateManyType type = CreateManyType.Normal)
     {
         var movies = MoviesToInsert(count);
-        var watch = new Stopwatch();
         await using var connection = _connectionFactory.Create();
         await connection.OpenAsync();
         using var transaction = connection.BeginTransaction();
 
         try
         {
-            watch.Start();
-            //await FastInsertAsync(count, 10, connection, movies, transaction);
-            await BulkInsertAsync(connection, movies, transaction);
-            //await NormalInsertAsync(connection, movies, transaction);
+            var watch = Stopwatch.StartNew();
+            switch (type)
+            {
+                case CreateManyType.Normal:
+                    await NormalInsertAsync(connection, movies, transaction);
+                    break;
+
+                case CreateManyType.Faster:
+                    await FastInsertAsync(count, 10, connection, movies, transaction);
+                    break;
+
+                case CreateManyType.Bulk:
+                    await BulkInsertAsync(connection, movies, transaction);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type));
+            }
 
             await transaction.CommitAsync();
+            Console.WriteLine(watch.ElapsedMilliseconds);
         }
         catch
         {
             await transaction.RollbackAsync();
             throw;
         }
-        watch.Stop();
-        Console.WriteLine(watch.ElapsedMilliseconds);
     }
 
     private static async Task NormalInsertAsync(SqlConnection connection, IReadOnlyList<Movie> movies, SqlTransaction transaction)
