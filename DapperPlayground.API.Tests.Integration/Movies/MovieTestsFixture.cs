@@ -3,6 +3,7 @@ using DapperPlayground.API.Tests.Integration.TestHelpers.Db;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -25,8 +26,6 @@ public class MovieTestsFixture : WebApplicationFactory<IApiMarker>, IAsyncLifeti
     {
         InitServiceProvider();
         await InitDbAsync();
-        _db = await TestContainersDb.CreateAsync();
-        
     }
 
     private void InitServiceProvider()
@@ -37,7 +36,8 @@ public class MovieTestsFixture : WebApplicationFactory<IApiMarker>, IAsyncLifeti
 
     private async Task InitDbAsync()
     {
-        _db = await TestContainersDb.CreateAsync();
+        var configuration = ServiceProvider.GetRequiredService<IConfiguration>();
+        _db = await TestDbGenerator.GenerateAsync(configuration);
     }
 
     async Task IAsyncLifetime.DisposeAsync()
