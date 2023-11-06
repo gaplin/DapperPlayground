@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -30,7 +30,7 @@
     <ProjectReference Include="..\DapperPlayground.API\DapperPlayground.API.csproj" />
   </ItemGroup>
 	<ItemGroup>
-		<None Include="..\DapperPlayground.Database\Snapshots\Test_db.dacpac">
+		<None Include="..\DapperPlayground.Database\Snapshots\Test_db.dacpac" Link="TestHelpers\Db\Test_db.dacpac">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>

@@ -3,6 +3,7 @@ using DapperPlayground.API.ConnectionFactories;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Diagnostics;
+using System.Net.WebSockets;
 using System.Text;
 
 namespace DapperPlayground.API.Movies;
@@ -16,17 +17,20 @@ public sealed class MovieService : IMovieService
         _connectionFactory = connectionFactory;
     }
 
-    public async Task CreateAsync(Movie movie)
+    public async Task<int> CreateAsync(Movie movie)
     {
         await using var connection = _connectionFactory.Create();
 
         const string sql =
             """
             INSERT INTO Movies (Name)
+            OUTPUT inserted.Id
             VALUES (@Name)
             """;
 
-        _ = await connection.ExecuteAsync(sql, movie);
+        var result = await connection.ExecuteScalarAsync<int>(sql, movie);
+
+        return result;
     }
 
     public async Task CreateManyAsync(int count)
@@ -139,6 +143,15 @@ public sealed class MovieService : IMovieService
             """;
 
         _ = await connection.ExecuteAsync(sql, new { id });
+    }
+
+    public async Task DeleteAllAsync()
+    {
+        await using var connection = _connectionFactory.Create();
+
+        const string sql = "DELETE FROM Movies";
+
+        _ = await connection.ExecuteAsync(sql);
     }
 
     public async Task<List<Movie>> GetAsync()
