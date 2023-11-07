@@ -173,6 +173,7 @@ public sealed class MovieService : IMovieService
                     await DeleteManyInAsync(ids, connection, transaction);
                     break;
                 case DeleteManyType.Tvp:
+                    await DeleteManyTvpAsync(ids, connection, transaction);
                     break;
                 case DeleteManyType.Bulk:
                     break;
@@ -198,6 +199,24 @@ public sealed class MovieService : IMovieService
                 Id in @Ids
             """;
         await connection.ExecuteAsync(sql, new { ids }, transaction: transaction);
+    }
+
+    private static async Task DeleteManyTvpAsync(IEnumerable<int> ids, SqlConnection connection, SqlTransaction transaction)
+    {
+        const string sql =
+            """
+            DELETE M
+            FROM Movies M
+            JOIN @Ids ids ON ids.Id = M.Id
+            """;
+        using var dt = new DataTable();
+        dt.Columns.Add("Id", typeof(int));
+        foreach(var id in ids)
+        {
+            dt.Rows.Add(id);
+        }
+
+        await connection.ExecuteAsync(sql, new {Ids = dt.AsTableValuedParameter("TVP_Ids")}, transaction: transaction);
     }
 
     public async Task DeleteAllAsync()
