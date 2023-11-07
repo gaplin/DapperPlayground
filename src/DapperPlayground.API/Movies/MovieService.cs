@@ -210,6 +210,13 @@ public sealed class MovieService : IMovieService
         _ = await connection.ExecuteAsync(sql, movie);
     }
 
+    public async Task ResetIdentityAsync()
+    {
+        await using var connection = _connectionFactory.Create();
+
+        await connection.ExecuteAsync("DBCC CHECKIDENT ('[Movies]', RESEED, 0);");
+    }
+
     private static IReadOnlyList<Movie> MoviesToInsert(int count)
     {
         var list = new List<Movie>(count);

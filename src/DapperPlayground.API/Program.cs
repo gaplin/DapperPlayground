@@ -65,6 +65,12 @@ movies.MapPost("/createMany", async (CreateManyRequest request, IMovieService se
     return Results.Ok();
 });
 
+movies.MapPost("/resetIdentity", async (IMovieService service) =>
+{
+    await service.ResetIdentityAsync();
+    return Results.Ok();
+});
+
 movies.MapPut("/", async (Movie movie, IMovieService service) =>
 {
     await service.UpdateAsync(movie);
