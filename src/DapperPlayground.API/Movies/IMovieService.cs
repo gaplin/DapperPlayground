@@ -12,4 +12,5 @@ public interface IMovieService
     Task DeleteAllAsync();
     Task CreateManyAsync(int count, CreateManyType type = CreateManyType.Normal);
     Task ResetIdentityAsync();
+    Task DeleteManyAsync(DeleteManyRequest request);
 }

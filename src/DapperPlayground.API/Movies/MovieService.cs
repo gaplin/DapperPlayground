@@ -157,6 +157,49 @@ public sealed class MovieService : IMovieService
         _ = await connection.ExecuteAsync(sql, new { id });
     }
 
+    public async Task DeleteManyAsync(DeleteManyRequest request)
+    {
+        var ids = Enumerable.Range(request.StartIdx, request.Count);
+        await using var connection = _connectionFactory.Create();
+        await connection.OpenAsync();
+        using var transaction = connection.BeginTransaction();
+
+        try
+        {
+            var stopWatch = Stopwatch.StartNew();
+            switch(request.DeleteManyType)
+            {
+                case DeleteManyType.In:
+                    await DeleteManyInAsync(ids, connection, transaction);
+                    break;
+                case DeleteManyType.Tvp:
+                    break;
+                case DeleteManyType.Bulk:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(request.DeleteManyType));
+            }
+            await transaction.CommitAsync();
+            Console.WriteLine(stopWatch.ElapsedMilliseconds);
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
+    private static async Task DeleteManyInAsync(IEnumerable<int> ids, SqlConnection connection, SqlTransaction transaction)
+    {
+        const string sql =
+            """
+            DELETE FROM Movies
+            WHERE 
+                Id in @Ids
+            """;
+        await connection.ExecuteAsync(sql, new { ids }, transaction: transaction);
+    }
+
     public async Task DeleteAllAsync()
     {
         await using var connection = _connectionFactory.Create();

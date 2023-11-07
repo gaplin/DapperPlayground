@@ -1,5 +1,6 @@
 using DapperPlayground.API.ConnectionFactories;
 using DapperPlayground.API.Movies;
+using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -80,6 +81,12 @@ movies.MapPut("/", async (Movie movie, IMovieService service) =>
 movies.MapDelete("/{id}", async (int id, IMovieService service) =>
 {
     await service.DeleteAsync(id);
+    return Results.Ok();
+});
+
+movies.MapDelete("/deleteMany", async ([FromBody] DeleteManyRequest request, IMovieService service) =>
+{
+    await service.DeleteManyAsync(request);
     return Results.Ok();
 });
 
