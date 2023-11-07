@@ -33,6 +33,5 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\DapperPlayground.API\DapperPlayground.API.csproj" />
-	  <ProjectReference Include="..\..\src\DapperPlayground.Database\DapperPlayground.Database.sqlproj" />
 	</ItemGroup>
 </Project>
