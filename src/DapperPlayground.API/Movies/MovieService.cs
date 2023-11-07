@@ -176,6 +176,7 @@ public sealed class MovieService : IMovieService
                     await DeleteManyTvpAsync(ids, connection, transaction);
                     break;
                 case DeleteManyType.Bulk:
+                    await DeleteManyBulkAsync(ids, connection, transaction);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(request.DeleteManyType));
@@ -217,6 +218,40 @@ public sealed class MovieService : IMovieService
         }
 
         await connection.ExecuteAsync(sql, new {Ids = dt.AsTableValuedParameter("TVP_Ids")}, transaction: transaction);
+    }
+
+    private static async Task DeleteManyBulkAsync(IEnumerable<int> ids, SqlConnection connection, SqlTransaction transaction)
+    {
+        const string createTempIdsTableSql =
+            """
+            CREATE TABLE #Ids(
+            Id INT NOT NULL PRIMARY KEY
+            )
+            """;
+        await connection.ExecuteAsync(createTempIdsTableSql, transaction: transaction);
+        using (var bulkCopy = new SqlBulkCopy(connection, SqlBulkCopyOptions.Default, transaction))
+        {
+            bulkCopy.DestinationTableName = "#Ids";
+            using var dt = new DataTable();
+            dt.Columns.Add("Id", typeof(int));
+            foreach (var id in ids)
+            {
+                dt.Rows.Add(id);
+            }
+            await bulkCopy.WriteToServerAsync(dt);
+        }
+
+        
+
+        const string sql =
+            """
+            DELETE M
+            FROM Movies M
+            JOIN #Ids ids ON ids.Id = M.Id
+            """;
+
+        await connection.ExecuteAsync(sql, transaction: transaction);
+        await connection.ExecuteAsync("Drop table #Ids", transaction: transaction);
     }
 
     public async Task DeleteAllAsync()
