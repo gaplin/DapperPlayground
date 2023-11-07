@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using DapperPlayground.API.ConnectionFactories;
 using DapperPlayground.API.Enums;
+using DapperPlayground.API.Extensions;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Diagnostics;
@@ -159,7 +160,8 @@ public sealed class MovieService : IMovieService
 
     public async Task DeleteManyAsync(DeleteManyRequest request)
     {
-        var ids = Enumerable.Range(request.StartIdx, request.Count);
+        var ids = Enumerable.Range(request.StartIdx, request.Count).ToList();
+        ids.Shuffle();
         await using var connection = _connectionFactory.Create();
         await connection.OpenAsync();
         using var transaction = connection.BeginTransaction();
