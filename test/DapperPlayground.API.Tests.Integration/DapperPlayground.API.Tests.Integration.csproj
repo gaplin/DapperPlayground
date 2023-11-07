@@ -26,13 +26,13 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\DapperPlayground.API\DapperPlayground.API.csproj" />
-  </ItemGroup>
 	<ItemGroup>
-		<None Include="..\DapperPlayground.Database\Snapshots\Test_db.dacpac" Link="TestHelpers\Db\Test_db.dacpac">
+		<None Include="..\..\src\DapperPlayground.Database\Snapshots\Test_db.dacpac" Link="TestHelpers\Db\Test_db.dacpac">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\src\DapperPlayground.API\DapperPlayground.API.csproj" />
+	  <ProjectReference Include="..\..\src\DapperPlayground.Database\DapperPlayground.Database.sqlproj" />
 	</ItemGroup>
 </Project>

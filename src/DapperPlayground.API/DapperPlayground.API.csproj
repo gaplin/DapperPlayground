@@ -19,6 +19,7 @@
     <PropertyGroup>
 		<NoWarn>$(NoWarn);1591</NoWarn>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<DockerfileContext>..\..</DockerfileContext>
 	</PropertyGroup>
 	
 </Project>
