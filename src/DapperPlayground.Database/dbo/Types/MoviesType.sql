@@ -1,0 +1,3 @@
+﻿CREATE TYPE TVP_Movies_Insert AS TABLE (
+	[Name] VARCHAR (50) NOT NULL
+)

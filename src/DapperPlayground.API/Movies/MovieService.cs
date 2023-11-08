@@ -58,6 +58,10 @@ public sealed class MovieService : IMovieService
                     await BulkInsertAsync(connection, movies, transaction);
                     break;
 
+                case CreateManyType.Tvp:
+                    await TvpInsertAsync(connection, movies, transaction);
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type));
             }
@@ -98,6 +102,26 @@ public sealed class MovieService : IMovieService
         }
 
         await bulkCopy.WriteToServerAsync(table);
+    }
+
+    private static async Task TvpInsertAsync(SqlConnection connection, IReadOnlyList<Movie> movies, SqlTransaction transaction)
+    {
+        using var table = new DataTable();
+        table.Columns.Add("Name", typeof(string));
+        foreach (var movie in movies)
+        {
+            table.Rows.Add(movie.Name);
+        }
+
+        const string sql =
+            """
+            INSERT INTO [Movies]
+            (Name)
+            SELECT Name
+            FROM @Tvp
+            """;
+
+        await connection.ExecuteAsync(sql, new { Tvp = table.AsTableValuedParameter("TVP_Movies_Insert") }, transaction: transaction);
     }
 
     private static async Task FastInsertAsync(int count, int batchSize, SqlConnection connection, IReadOnlyList<Movie> movies, SqlTransaction transaction)
