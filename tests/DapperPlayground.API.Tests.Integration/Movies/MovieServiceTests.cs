@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using DapperPlayground.API.ConnectionFactories;
+using DapperPlayground.API.Enums;
 using DapperPlayground.API.Movies;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -32,7 +33,7 @@ public sealed class MovieServiceTests : IClassFixture<MovieTestsFixture>, IAsync
     }
 
     [Fact]
-    public async Task CreateManyAndGetAll()
+    public async Task CreateMultipleAndGetAll()
     {
         // Arrange
         var firstMovie = new Movie(100, "firstMovie");
@@ -100,6 +101,59 @@ public sealed class MovieServiceTests : IClassFixture<MovieTestsFixture>, IAsync
         result.Should().BeNull();
     }
 
+    [Fact]
+    public async Task CreateAfterResetingIdentityReturns1()
+    {
+        // Arrange
+        var firstMovie = new Movie(999, "name");
+        _ = await _movieService.CreateAsync(firstMovie);
+        _ = await _movieService.CreateAsync(firstMovie);
+        await _movieService.DeleteAllAsync();
+
+        // Act
+        await _movieService.ResetIdentityAsync();
+        var result = await _movieService.CreateAsync(firstMovie);
+
+        // Assert
+        result.Should().Be(1);
+    }
+
+    [Theory]
+    [InlineData(999, CreateManyType.Normal)]
+    [InlineData(9999, CreateManyType.Faster)]
+    [InlineData(99999, CreateManyType.Tvp)]
+    [InlineData(999999, CreateManyType.Bulk)]
+    public async Task CreateMany_CreatesGivenAmount(int count, CreateManyType type)
+    {
+        // Act
+        await _movieService.CreateManyAsync(count, type);
+
+        // Assert
+        var insertedCountries = await _movieService.GetAsync();
+        insertedCountries.Should().HaveCount(count);    
+    }
+
+    [Theory]
+    [InlineData(99, 999, DeleteManyType.In)]
+    [InlineData(3, 999999, DeleteManyType.Tvp)]
+    [InlineData(3, 999999, DeleteManyType.Bulk)]
+    public async Task DeleteMany_DeletesProvidedRange(int startId, int count, DeleteManyType type)
+    {
+        // Arrage
+        var itemsToAdd = Random.Shared.Next(5, 50);
+        await _movieService.CreateManyAsync(startId + count - 1 + itemsToAdd, CreateManyType.Bulk);
+        var deleteRequest = new DeleteManyRequest(startId, count, type);
+        int additionalItems = startId - 1 + itemsToAdd;
+
+        // Act
+        await _movieService.DeleteManyAsync(deleteRequest);
+
+        // Assert
+        var remainingCountries = await _movieService.GetAsync();
+        remainingCountries.Should().NotContain(x => x.Id >= startId && x.Id <= count)
+            .And.HaveCount(additionalItems);
+    }
+
     public Task InitializeAsync()
     {
         return Task.CompletedTask;
@@ -110,5 +164,6 @@ public sealed class MovieServiceTests : IClassFixture<MovieTestsFixture>, IAsync
         var connectionFactory = _serviceProvider.GetRequiredService<ISqlConnectionFactory>();
         await using var connection = connectionFactory.Create();
         await connection.ExecuteAsync("DELETE FROM Movies");
+        await connection.ExecuteAsync("DBCC CHECKIDENT ('[Movies]', RESEED, 0);");
     }
 }
