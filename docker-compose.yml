@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  dapperplayground.api:
+    image: ${DOCKER_REGISTRY-}dapperplaygroundapi
+    environment:
+      - ConnectionStrings__Database=Server=sqlDb;Initial Catalog=TestDb;User Id=sa;Password=myStron3dg@#;Trust Server Certificate=True;
+    build:
+      context: .
+      dockerfile: src/DapperPlayground.API/Dockerfile
+
+  dapperplayground.db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlDb
+    ports:
+      - 1432:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=myStron3dg@#
