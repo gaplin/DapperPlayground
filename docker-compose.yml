@@ -17,3 +17,8 @@ services:
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=myStron3dg@#
+    volumes:
+      - sql_db:/var/opt/mssql
+
+volumes:
+  sql_db:
