@@ -1,5 +1,4 @@
-﻿using DotNet.Testcontainers.Builders;
-using Microsoft.SqlServer.Dac;
+﻿using Microsoft.SqlServer.Dac;
 using System.Reflection;
 using Testcontainers.MsSql;
 
@@ -10,13 +9,12 @@ public class TestContainersDb : ITestDb
     private readonly MsSqlContainer _dbContainer =
         new MsSqlBuilder()
         .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
-        .WithWaitStrategy(Wait.ForUnixContainer().UntilCommandIsCompleted("/opt/mssql-tools18/bin/sqlcmd", "-C", "-Q", "SELECT 1;"))
         .Build();
+
     public string ConnectionString => _dbContainer.GetConnectionString();
 
     private TestContainersDb()
     {
-
     }
 
     public static async Task<TestContainersDb> CreateAsync()

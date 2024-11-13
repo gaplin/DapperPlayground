@@ -130,7 +130,7 @@ public sealed class MovieServiceTests : IClassFixture<MovieTestsFixture>, IAsync
 
         // Assert
         var insertedCountries = await _movieService.GetAsync();
-        insertedCountries.Should().HaveCount(count);    
+        insertedCountries.Should().HaveCount(count);
     }
 
     [Theory]

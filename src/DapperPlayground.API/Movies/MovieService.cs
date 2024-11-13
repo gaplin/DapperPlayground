@@ -193,17 +193,20 @@ public sealed class MovieService : IMovieService
         try
         {
             var stopWatch = Stopwatch.StartNew();
-            switch(request.DeleteManyType)
+            switch (request.DeleteManyType)
             {
                 case DeleteManyType.In:
                     await DeleteManyInAsync(ids, connection, transaction);
                     break;
+
                 case DeleteManyType.Tvp:
                     await DeleteManyTvpAsync(ids, connection, transaction);
                     break;
+
                 case DeleteManyType.Bulk:
                     await DeleteManyBulkAsync(ids, connection, transaction);
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(request.DeleteManyType));
             }
@@ -222,7 +225,7 @@ public sealed class MovieService : IMovieService
         const string sql =
             """
             DELETE FROM Movies
-            WHERE 
+            WHERE
                 Id in @Ids
             """;
         await connection.ExecuteAsync(sql, new { ids }, transaction: transaction);
@@ -238,12 +241,12 @@ public sealed class MovieService : IMovieService
             """;
         using var dt = new DataTable();
         dt.Columns.Add("Id", typeof(int));
-        foreach(var id in ids)
+        foreach (var id in ids)
         {
             dt.Rows.Add(id);
         }
 
-        await connection.ExecuteAsync(sql, new {Ids = dt.AsTableValuedParameter("TVP_Ids")}, transaction: transaction);
+        await connection.ExecuteAsync(sql, new { Ids = dt.AsTableValuedParameter("TVP_Ids") }, transaction: transaction);
     }
 
     private static async Task DeleteManyBulkAsync(IEnumerable<int> ids, SqlConnection connection, SqlTransaction transaction)
@@ -266,8 +269,6 @@ public sealed class MovieService : IMovieService
             }
             await bulkCopy.WriteToServerAsync(dt);
         }
-
-        
 
         const string sql =
             """
