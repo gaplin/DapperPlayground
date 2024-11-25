@@ -15,7 +15,7 @@
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="162.4.92" />
-    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="171.30.0" />
+    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="172.52.0" />
     <PackageReference Include="System.IO.Packaging" Version="9.0.0" />
     <PackageReference Include="Testcontainers.MsSql" Version="4.0.0" />
     <PackageReference Include="xunit" Version="2.9.2" />
