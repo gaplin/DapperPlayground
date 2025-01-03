@@ -22,7 +22,7 @@ public class MovieTestsFixture : WebApplicationFactory<IApiMarker>, IAsyncLifeti
             services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>(provider => new SqlConnectionFactory(_db.ConnectionString));
         });
     }
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         InitServiceProvider();
         await InitDbAsync();
@@ -40,9 +40,10 @@ public class MovieTestsFixture : WebApplicationFactory<IApiMarker>, IAsyncLifeti
         _db = await TestDbGenerator.GenerateAsync(configuration);
     }
 
-    async Task IAsyncLifetime.DisposeAsync()
+    public override async ValueTask DisposeAsync()
     {
         await _scope.DisposeAsync();
         await _db.DisposeAsync();
+        await base.DisposeAsync();
     }
 }

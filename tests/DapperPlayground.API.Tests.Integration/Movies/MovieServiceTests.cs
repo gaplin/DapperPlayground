@@ -154,12 +154,12 @@ public sealed class MovieServiceTests : IClassFixture<MovieTestsFixture>, IAsync
             .And.HaveCount(additionalItems);
     }
 
-    public Task InitializeAsync()
+    public ValueTask InitializeAsync()
     {
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         var connectionFactory = _serviceProvider.GetRequiredService<ISqlConnectionFactory>();
         await using var connection = connectionFactory.Create();

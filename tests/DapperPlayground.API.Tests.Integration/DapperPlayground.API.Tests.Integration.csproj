@@ -7,6 +7,9 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <OutputType>Exe</OutputType>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,15 +21,15 @@
     <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="172.52.0" />
     <PackageReference Include="System.IO.Packaging" Version="9.0.0" />
     <PackageReference Include="Testcontainers.MsSql" Version="4.1.0" />
-    <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="coverlet.collector" Version="6.0.2">
+    <PackageReference Include="coverlet.collector" Version="6.0.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="xunit.v3" Version="1.0.0" />
   </ItemGroup>
 	<ItemGroup>
 		<None Include="..\..\src\DapperPlayground.Database\Snapshots\Test_db.dacpac" Link="TestHelpers\Db\Test_db.dacpac">
@@ -35,5 +38,10 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\DapperPlayground.API\DapperPlayground.API.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Update="xunit.runner.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 </Project>
