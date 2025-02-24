@@ -29,7 +29,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="xunit.v3" Version="1.0.1" />
+    <PackageReference Include="xunit.v3" Version="1.1.0" />
   </ItemGroup>
 	<ItemGroup>
 		<None Include="..\..\src\DapperPlayground.Database\Snapshots\Test_db.dacpac" Link="TestHelpers\Db\Test_db.dacpac">
