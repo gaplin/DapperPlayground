@@ -13,15 +13,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="8.2.0" />
+    <PackageReference Include="FluentAssertions" Version="8.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.5" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.0.94" />
-    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="172.64.0" />
+    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="172.76.0" />
     <PackageReference Include="System.IO.Packaging" Version="9.0.5" />
-    <PackageReference Include="Testcontainers.MsSql" Version="4.4.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.0">
+    <PackageReference Include="Testcontainers.MsSql" Version="4.5.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -29,7 +29,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="xunit.v3" Version="2.0.2" />
+    <PackageReference Include="xunit.v3" Version="2.0.3" />
   </ItemGroup>
 	<ItemGroup>
 		<None Include="..\..\src\DapperPlayground.Database\Snapshots\Test_db.dacpac" Link="TestHelpers\Db\Test_db.dacpac">
