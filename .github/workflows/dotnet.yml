@@ -21,8 +21,8 @@ jobs:
       with:
         dotnet-version: 9.x
     - name: Restore dependencies
-      run: dotnet restore DapperPlayground.sln
+      run: dotnet restore DapperPlayground.slnx
     - name: Build
-      run: dotnet build DapperPlayground.sln --no-restore --configuration Release
+      run: dotnet build DapperPlayground.slnx --no-restore --configuration Release
     - name: Test
-      run: dotnet test DapperPlayground.sln --no-build --verbosity normal --configuration Release
+      run: dotnet test DapperPlayground.slnx --no-build --verbosity normal --configuration Release

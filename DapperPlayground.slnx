@@ -1,0 +1,21 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".dockerignore" />
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/DapperPlayground.API/DapperPlayground.API.csproj" />
+    <Project Path="src/DapperPlayground.Database/DapperPlayground.Database.sqlproj" Id="583f323d-0cba-415d-a111-19ebd5f973b3">
+      <Deploy />
+    </Project>
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DapperPlayground.API.Tests.Integration/DapperPlayground.API.Tests.Integration.csproj" />
+  </Folder>
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
+</Solution>
