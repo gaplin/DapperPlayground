@@ -20,7 +20,7 @@
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.1.61" />
     <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="172.76.0" />
     <PackageReference Include="System.IO.Packaging" Version="9.0.9" />
-    <PackageReference Include="Testcontainers.MsSql" Version="4.7.0" />
+    <PackageReference Include="Testcontainers.MsSql" Version="4.8.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
