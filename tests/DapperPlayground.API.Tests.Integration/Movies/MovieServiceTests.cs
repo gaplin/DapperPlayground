@@ -122,6 +122,7 @@ public sealed class MovieServiceTests : IClassFixture<MovieTestsFixture>, IAsync
     [InlineData(999, CreateManyType.Normal)]
     [InlineData(9999, CreateManyType.Faster)]
     [InlineData(99999, CreateManyType.Tvp)]
+    [InlineData(99999, CreateManyType.TvpSqlDataRecord)]
     [InlineData(999999, CreateManyType.Bulk)]
     public async Task CreateMany_CreatesGivenAmount(int count, CreateManyType type)
     {

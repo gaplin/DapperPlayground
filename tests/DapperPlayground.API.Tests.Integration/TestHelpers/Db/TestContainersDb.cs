@@ -7,7 +7,7 @@ namespace DapperPlayground.API.Tests.Integration.TestHelpers.Db;
 public class TestContainersDb : ITestDb
 {
     private readonly MsSqlContainer _dbContainer =
-        new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-latest")
+        new MsSqlBuilder("mcr.microsoft.com/mssql/server:2025-latest")
         .Build();
 
     public string ConnectionString => _dbContainer.GetConnectionString();

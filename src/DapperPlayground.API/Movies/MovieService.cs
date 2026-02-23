@@ -3,6 +3,7 @@ using DapperPlayground.API.ConnectionFactories;
 using DapperPlayground.API.Enums;
 using DapperPlayground.API.Extensions;
 using Microsoft.Data.SqlClient;
+using Microsoft.Data.SqlClient.Server;
 using System.Data;
 using System.Diagnostics;
 using System.Text;
@@ -24,7 +25,7 @@ public sealed class MovieService : IMovieService
 
         const string sql =
             """
-            INSERT INTO Movies (Name)
+            INSERT INTO [dbo].[Movies] (Name)
             OUTPUT inserted.Id
             VALUES (@Name)
             """;
@@ -43,7 +44,7 @@ public sealed class MovieService : IMovieService
 
         try
         {
-            var watch = Stopwatch.StartNew();
+            var start = Stopwatch.GetTimestamp();
             switch (type)
             {
                 case CreateManyType.Normal:
@@ -59,7 +60,11 @@ public sealed class MovieService : IMovieService
                     break;
 
                 case CreateManyType.Tvp:
-                    await TvpInsertAsync(connection, movies, transaction);
+                    await TvpDataTableInsertAsync(connection, movies, transaction);
+                    break;
+
+                case CreateManyType.TvpSqlDataRecord:
+                    await TvpSqlDataRecordInsertAsync(connection, movies, transaction);
                     break;
 
                 default:
@@ -67,7 +72,8 @@ public sealed class MovieService : IMovieService
             }
 
             await transaction.CommitAsync();
-            Console.WriteLine(watch.ElapsedMilliseconds);
+            var elapsed = Stopwatch.GetElapsedTime(start);
+            Console.WriteLine(elapsed);
         }
         catch
         {
@@ -80,7 +86,7 @@ public sealed class MovieService : IMovieService
     {
         const string sql =
             """
-            INSERT INTO [Movies] (Name)
+            INSERT INTO [dbo].[Movies] (Name)
             VALUES
             (@Name)
             """;
@@ -91,7 +97,7 @@ public sealed class MovieService : IMovieService
     private static async Task BulkInsertAsync(SqlConnection connection, IReadOnlyList<Movie> movies, SqlTransaction transaction)
     {
         using var bulkCopy = new SqlBulkCopy(connection, SqlBulkCopyOptions.Default, transaction);
-        bulkCopy.DestinationTableName = "[Movies]";
+        bulkCopy.DestinationTableName = "[dbo].[Movies]";
         bulkCopy.ColumnMappings.Add("Name", "Name");
 
         using var table = new DataTable();
@@ -104,7 +110,7 @@ public sealed class MovieService : IMovieService
         await bulkCopy.WriteToServerAsync(table);
     }
 
-    private static async Task TvpInsertAsync(SqlConnection connection, IReadOnlyList<Movie> movies, SqlTransaction transaction)
+    private static async Task TvpDataTableInsertAsync(SqlConnection connection, IReadOnlyList<Movie> movies, SqlTransaction transaction)
     {
         using var table = new DataTable();
         table.Columns.Add("Name", typeof(string));
@@ -115,20 +121,45 @@ public sealed class MovieService : IMovieService
 
         const string sql =
             """
-            INSERT INTO [Movies]
+            INSERT INTO [dbo].[Movies]
             (Name)
             SELECT Name
             FROM @Tvp
             """;
 
-        await connection.ExecuteAsync(sql, new { Tvp = table.AsTableValuedParameter("TVP_Movies_Insert") }, transaction: transaction);
+        await connection.ExecuteAsync(sql, new { Tvp = table.AsTableValuedParameter("[dbo].[TVP_Movies_Insert]") }, transaction: transaction);
+    }
+
+    private static async Task TvpSqlDataRecordInsertAsync(SqlConnection connection, IReadOnlyList<Movie> movies, SqlTransaction transaction)
+    {
+        SqlMetaData[] meta =
+        [
+            new("Name", SqlDbType.VarChar, maxLength: 50)
+        ];
+        SqlDataRecord[] records = new SqlDataRecord[movies.Count];
+        for (int i = 0; i < movies.Count; ++i)
+        {
+            var record = new SqlDataRecord(meta);
+            record.SetString(ordinal: 0, movies[i].Name);
+            records[i] = record;
+        }
+
+        const string sql =
+            """
+            INSERT INTO [dbo].[Movies]
+            (Name)
+            SELECT Name
+            FROM @Tvp
+            """;
+
+        await connection.ExecuteAsync(sql, new { Tvp = records.AsTableValuedParameter("[dbo].[TVP_Movies_Insert]") }, transaction: transaction);
     }
 
     private static async Task FastInsertAsync(int count, int batchSize, SqlConnection connection, IReadOnlyList<Movie> movies, SqlTransaction transaction)
     {
         const string baseSql =
                 """
-                INSERT INTO [Movies] (Name)
+                INSERT INTO [dbo].[Movies] (Name)
                 VALUES
 
                 """;
@@ -175,7 +206,7 @@ public sealed class MovieService : IMovieService
 
         const string sql =
             """
-            DELETE Movies
+            DELETE [dbo].[Movies]
             WHERE Id = @Id
             """;
 
@@ -224,7 +255,7 @@ public sealed class MovieService : IMovieService
     {
         const string sql =
             """
-            DELETE FROM Movies
+            DELETE FROM [dbo].[Movies]
             WHERE
                 Id in @Ids
             """;
@@ -236,7 +267,7 @@ public sealed class MovieService : IMovieService
         const string sql =
             """
             DELETE M
-            FROM Movies M
+            FROM [dbo].[Movies] M
             JOIN @Ids ids ON ids.Id = M.Id
             """;
         using var dt = new DataTable();
@@ -254,7 +285,7 @@ public sealed class MovieService : IMovieService
         const string createTempIdsTableSql =
             """
             CREATE TABLE #Ids(
-            Id INT NOT NULL PRIMARY KEY
+                Id INT NOT NULL PRIMARY KEY
             )
             """;
         await connection.ExecuteAsync(createTempIdsTableSql, transaction: transaction);
@@ -273,7 +304,7 @@ public sealed class MovieService : IMovieService
         const string sql =
             """
             DELETE M
-            FROM Movies M
+            FROM [dbo].[Movies] M
             JOIN #Ids ids ON ids.Id = M.Id
             """;
 
@@ -285,7 +316,7 @@ public sealed class MovieService : IMovieService
     {
         await using var connection = _connectionFactory.Create();
 
-        const string sql = "DELETE FROM Movies";
+        const string sql = "DELETE FROM [dbo].[Movies]";
 
         _ = await connection.ExecuteAsync(sql);
     }
@@ -297,7 +328,7 @@ public sealed class MovieService : IMovieService
         const string sql =
             """
             SELECT Id, Name
-            FROM Movies
+            FROM [dbo].[Movies]
             """;
 
         var movies = await connection.QueryAsync<Movie>(sql);
@@ -311,7 +342,7 @@ public sealed class MovieService : IMovieService
         const string sql =
             """
             SELECT Id, Name
-            FROM Movies
+            FROM [dbo].[Movies]
             WHERE Id = @Id
             """;
 
@@ -325,7 +356,7 @@ public sealed class MovieService : IMovieService
 
         const string sql =
             """
-            UPDATE Movies
+            UPDATE [dbo].[Movies]
             SET
                 Name = @Name
             WHERE Id = @Id
@@ -338,7 +369,7 @@ public sealed class MovieService : IMovieService
     {
         await using var connection = _connectionFactory.Create();
 
-        await connection.ExecuteAsync("DBCC CHECKIDENT ('[Movies]', RESEED, 0);");
+        await connection.ExecuteAsync("DBCC CHECKIDENT ('[dbo].[Movies]', RESEED, 0);");
     }
 
     private static IReadOnlyList<Movie> MoviesToInsert(int count)

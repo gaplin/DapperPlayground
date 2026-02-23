@@ -1,6 +1,7 @@
 using DapperPlayground.API.ConnectionFactories;
 using DapperPlayground.API.Movies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,7 +34,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
+    app.UseSwagger(opts => opts.OpenApiVersion = OpenApiSpecVersion.OpenApi3_1);
     app.UseSwaggerUI();
 }
 
