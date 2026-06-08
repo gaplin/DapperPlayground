@@ -16,7 +16,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.8" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.6.0" />
-    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.3.93" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.4.83" />
     <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="181.19.0" />
     <PackageReference Include="System.IO.Packaging" Version="10.0.8" />
     <PackageReference Include="Testcontainers.MsSql" Version="4.12.0" />
