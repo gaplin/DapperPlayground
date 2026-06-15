@@ -18,7 +18,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.6.0" />
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.4.83" />
     <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="181.25.0" />
-    <PackageReference Include="System.IO.Packaging" Version="10.0.8" />
+    <PackageReference Include="System.IO.Packaging" Version="10.0.9" />
     <PackageReference Include="Testcontainers.MsSql" Version="4.12.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
