@@ -40,7 +40,7 @@ public sealed class MovieService : IMovieService
         var movies = MoviesToInsert(count);
         await using var connection = _connectionFactory.Create();
         await connection.OpenAsync();
-        using var transaction = connection.BeginTransaction();
+        using var transaction = (SqlTransaction) await connection.BeginTransactionAsync();
 
         try
         {
@@ -219,7 +219,7 @@ public sealed class MovieService : IMovieService
         ids.Shuffle();
         await using var connection = _connectionFactory.Create();
         await connection.OpenAsync();
-        using var transaction = connection.BeginTransaction();
+        using var transaction = (SqlTransaction) await connection.BeginTransactionAsync();
 
         try
         {
