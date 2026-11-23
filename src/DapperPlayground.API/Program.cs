@@ -34,7 +34,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger(opts => opts.OpenApiVersion = OpenApiSpecVersion.OpenApi3_1);
+    app.UseSwagger(opts => opts.OpenApiVersion = OpenApiSpecVersion.OpenApi3_2);
     app.UseSwaggerUI();
 }
 
